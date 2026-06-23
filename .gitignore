@@ -1,0 +1,4 @@
+node_modules/
+.env
+posts_cache.json
+*.log

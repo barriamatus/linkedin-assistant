@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkedIn Assistant</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- LOGIN STATE -->
+    <div id="login-screen" class="hidden">
+      <div class="login-card">
+        <div class="logo">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <rect width="48" height="48" rx="8" fill="#0A66C2"/>
+            <path d="M16 20h-4v12h4V20zm-2-6a2 2 0 100 4 2 2 0 000-4zm18 6c-2 0-3.5.8-4.5 2V20H24v12h4v-6c0-1.7 1.3-3 3-3s3 1.3 3 3v6h4v-7c0-3.3-2.7-5-6-5z" fill="white"/>
+          </svg>
+          <h1>LinkedIn Assistant</h1>
+        </div>
+        <p>Tu asistente inteligente para gestionar tu presencia en LinkedIn</p>
+        <ul class="features">
+          <li>✍️ Genera posts con IA</li>
+          <li>💬 Sugiere comentarios</li>
+          <li>📊 Evalúa contenido para compartir</li>
+          <li>🚀 Publica directamente en LinkedIn</li>
+        </ul>
+        <a href="/auth/login" class="btn btn-linkedin">
+          <svg width="20" height="20" viewBox="0 0 48 48"><rect width="48" height="48" rx="4" fill="#0A66C2"/><path d="M16 20h-4v12h4V20zm-2-6a2 2 0 100 4 2 2 0 000-4zm18 6c-2 0-3.5.8-4.5 2V20H24v12h4v-6c0-1.7 1.3-3 3-3s3 1.3 3 3v6h4v-7c0-3.3-2.7-5-6-5z" fill="white"/></svg>
+          Conectar con LinkedIn
+        </a>
+        <p class="disclaimer">Solo se accede a tu perfil básico y permisos de publicación. Sin acceso a mensajes privados.</p>
+      </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="main-app" class="hidden">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
+            <rect width="48" height="48" rx="6" fill="#0A66C2"/>
+            <path d="M16 20h-4v12h4V20zm-2-6a2 2 0 100 4 2 2 0 000-4zm18 6c-2 0-3.5.8-4.5 2V20H24v12h4v-6c0-1.7 1.3-3 3-3s3 1.3 3 3v6h4v-7c0-3.3-2.7-5-6-5z" fill="white"/>
+          </svg>
+          <span>LinkedIn Assistant</span>
+        </div>
+        <nav>
+          <a href="#" class="nav-item active" data-tab="compose">
+            <span class="icon">✍️</span> Crear Post
+          </a>
+          <a href="#" class="nav-item" data-tab="comment">
+            <span class="icon">💬</span> Comentar
+          </a>
+          <a href="#" class="nav-item" data-tab="share">
+            <span class="icon">🔗</span> Compartir
+          </a>
+          <a href="#" class="nav-item" data-tab="posts">
+            <span class="icon">📋</span> Mis Posts
+          </a>
+          <a href="#" class="nav-item" data-tab="chat">
+            <span class="icon">🤖</span> Chat IA
+          </a>
+        </nav>
+        <div class="sidebar-footer">
+          <div id="user-info" class="user-info">
+            <img id="user-avatar" src="" alt="Avatar" class="avatar">
+            <div>
+              <div id="user-name" class="user-name"></div>
+              <div id="user-email" class="user-email"></div>
+            </div>
+          </div>
+          <button id="logout-btn" class="btn-logout">Cerrar sesión</button>
+        </div>
+      </aside>
+
+      <!-- CONTENT AREA -->
+      <main class="content">
+
+        <!-- TAB: CREAR POST -->
+        <div id="tab-compose" class="tab-content active">
+          <div class="tab-header">
+            <h2>✍️ Crear Post</h2>
+            <p>Genera posts con IA o escribe el tuyo y mejóralo</p>
+          </div>
+          <div class="card">
+            <h3>Generar con IA</h3>
+            <div class="form-group">
+              <label>Tema del post</label>
+              <input type="text" id="post-topic" placeholder="Ej: innovación en IA, liderazgo, experiencia en proyectos..." class="input">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Tono</label>
+                <select id="post-tone" class="input">
+                  <option value="profesional">Profesional</option>
+                  <option value="inspirador">Inspirador</option>
+                  <option value="educativo">Educativo</option>
+                  <option value="personal">Personal/Auténtico</option>
+                  <option value="analítico">Analítico</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Visibilidad</label>
+                <select id="post-visibility" class="input">
+                  <option value="PUBLIC">Público</option>
+                  <option value="CONNECTIONS">Solo conexiones</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Contexto adicional (opcional)</label>
+              <input type="text" id="post-context" placeholder="Algo específico que quieras incluir..." class="input">
+            </div>
+            <button id="generate-post-btn" class="btn btn-primary">✨ Generar Post</button>
+          </div>
+
+          <div class="card">
+            <h3>Borrador</h3>
+            <textarea id="post-draft" class="textarea" placeholder="Tu post aparecerá aquí. También puedes escribir directamente..." rows="10"></textarea>
+            <div id="post-char-count" class="char-count">0 / 3000 caracteres</div>
+            <div class="btn-group">
+              <button id="improve-post-btn" class="btn btn-secondary">🔧 Mejorar con IA</button>
+              <button id="publish-post-btn" class="btn btn-primary">🚀 Publicar en LinkedIn</button>
+            </div>
+            <div id="improve-instructions" class="form-group hidden">
+              <input type="text" id="improve-text" placeholder="¿Qué quieres mejorar? Ej: más conciso, más emojis, tono más formal..." class="input">
+              <button id="improve-submit-btn" class="btn btn-secondary" style="margin-top: 8px">Aplicar mejora</button>
+            </div>
+          </div>
+          <div id="compose-status" class="status hidden"></div>
+        </div>
+
+        <!-- TAB: COMENTAR -->
+        <div id="tab-comment" class="tab-content">
+          <div class="tab-header">
+            <h2>💬 Comentar en Posts</h2>
+            <p>Pega el texto de un post y la IA te sugiere comentarios o comenta directamente</p>
+          </div>
+          <div class="card">
+            <h3>Texto del post</h3>
+            <textarea id="comment-post-text" class="textarea" placeholder="Pega aquí el texto del post en el que quieres comentar..." rows="5"></textarea>
+            <div class="form-group" style="margin-top: 12px">
+              <label>Ángulo del comentario</label>
+              <select id="comment-angle" class="input">
+                <option value="aportar valor">Aportar valor / insight</option>
+                <option value="hacer una pregunta">Hacer una pregunta</option>
+                <option value="compartir experiencia">Compartir experiencia propia</option>
+                <option value="complementar la idea">Complementar la idea</option>
+                <option value="respetuosamente disentir">Disentir respetuosamente</option>
+              </select>
+            </div>
+            <button id="suggest-comment-btn" class="btn btn-primary">💡 Sugerir Comentarios</button>
+          </div>
+
+          <div id="comment-suggestions" class="card hidden">
+            <h3>Sugerencias de comentario</h3>
+            <div id="suggestions-list"></div>
+          </div>
+
+          <div class="card">
+            <h3>Publicar comentario directo</h3>
+            <p class="hint">Necesitas el URN del post (formato: urn:li:ugcPost:XXXXXXXX)</p>
+            <div class="form-group">
+              <label>URN del post</label>
+              <input type="text" id="comment-post-urn" placeholder="urn:li:ugcPost:..." class="input">
+            </div>
+            <div class="form-group">
+              <label>Tu comentario</label>
+              <textarea id="comment-text" class="textarea" placeholder="Escribe tu comentario..." rows="4"></textarea>
+            </div>
+            <button id="publish-comment-btn" class="btn btn-primary">💬 Publicar Comentario</button>
+            <div id="comment-status" class="status hidden"></div>
+          </div>
+        </div>
+
+        <!-- TAB: COMPARTIR -->
+        <div id="tab-share" class="tab-content">
+          <div class="tab-header">
+            <h2>🔗 Evaluar y Compartir</h2>
+            <p>Describe un contenido y la IA evalúa si vale la pena compartirlo y genera el post</p>
+          </div>
+          <div class="card">
+            <div class="form-group">
+              <label>URL del contenido (opcional)</label>
+              <input type="text" id="share-url" placeholder="https://..." class="input">
+            </div>
+            <div class="form-group">
+              <label>Resumen o descripción del contenido</label>
+              <textarea id="share-summary" class="textarea" placeholder="Describe brevemente el artículo, video, noticia o contenido que quieres compartir..." rows="5"></textarea>
+            </div>
+            <button id="evaluate-btn" class="btn btn-primary">🔍 Evaluar Contenido</button>
+          </div>
+
+          <div id="evaluation-result" class="card hidden">
+            <div id="eval-score-badge" class="score-badge"></div>
+            <h3 id="eval-verdict"></h3>
+            <p id="eval-reason"></p>
+            <div id="eval-post-section" class="hidden">
+              <h4>Post generado para compartir:</h4>
+              <div id="eval-post-preview" class="post-preview"></div>
+              <div class="btn-group">
+                <button id="eval-edit-btn" class="btn btn-secondary">✏️ Editar antes de publicar</button>
+                <button id="eval-publish-btn" class="btn btn-primary">🚀 Publicar</button>
+              </div>
+            </div>
+            <div id="share-status" class="status hidden"></div>
+          </div>
+        </div>
+
+        <!-- TAB: MIS POSTS -->
+        <div id="tab-posts" class="tab-content">
+          <div class="tab-header">
+            <h2>📋 Mis Posts Recientes</h2>
+            <p>Tus últimas publicaciones en LinkedIn</p>
+          </div>
+          <div class="card">
+            <button id="refresh-posts-btn" class="btn btn-secondary">🔄 Cargar mis posts</button>
+          </div>
+          <div id="posts-list"></div>
+          <div id="posts-status" class="status hidden"></div>
+        </div>
+
+        <!-- TAB: CHAT -->
+        <div id="tab-chat" class="tab-content">
+          <div class="tab-header">
+            <h2>🤖 Chat con IA</h2>
+            <p>Pregunta sobre estrategia de LinkedIn, content marketing, networking y más</p>
+          </div>
+          <div class="card chat-container">
+            <div id="chat-messages" class="chat-messages">
+              <div class="message assistant-message">
+                <strong>Asistente</strong>
+                <p>Hola! Soy tu asistente de LinkedIn. ¿En qué te puedo ayudar hoy? Puedo ayudarte con estrategia de contenido, cómo mejorar tu perfil, qué temas postear, cómo generar más engagement, o cualquier otra consulta sobre LinkedIn. 💼</p>
+              </div>
+            </div>
+            <div class="chat-input-area">
+              <textarea id="chat-input" class="textarea" placeholder="Escribe tu pregunta..." rows="3"></textarea>
+              <button id="chat-send-btn" class="btn btn-primary">Enviar</button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <div id="loading-overlay" class="loading-overlay hidden">
+    <div class="spinner"></div>
+    <p id="loading-text">Procesando...</p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
